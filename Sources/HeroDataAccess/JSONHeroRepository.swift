@@ -10,12 +10,12 @@ import Foundation
 
 /// Implements the ``HeroRepository`` protocol that the
 /// domain layer owns. It uses an asynchronous image loader
-final class JSONHeroRepository: HeroRepository {
+public final class JSONHeroRepository: HeroRepository {
     private let openDotaBaseURL: URL
     private let heroURLs: URL
     private var imageLoader = AsyncImageLoader()
 
-    init(openDotaBaseURL: String, heroURLs: String) {
+    public init(openDotaBaseURL: String, heroURLs: String) {
         guard let openDotaBaseURL = URL(string: openDotaBaseURL)
         else { fatalError("Could not init URL with string: \(openDotaBaseURL)") }
         guard let heroURLs = URL(string: heroURLs)
@@ -24,7 +24,7 @@ final class JSONHeroRepository: HeroRepository {
         self.openDotaBaseURL = openDotaBaseURL
     }
 
-    func fetchHeroes() async throws -> [RawHero] {
+    public func fetchHeroes() async throws -> [RawHero] {
         let (data, response) = try await URLSession.shared.data(from: heroURLs)
 
         guard let httpResponse = response as? HTTPURLResponse,
@@ -35,7 +35,7 @@ final class JSONHeroRepository: HeroRepository {
         return heroes
     }
 
-    func images(from urls: [String]) async throws -> [URL: HeroImage] {
+    public func images(from urls: [String]) async throws -> [URL: HeroImage] {
         let fullURL = urls.compactMap({ URL(string: $0, relativeTo: openDotaBaseURL)})
         return try await imageLoader.images(from: fullURL)
     }

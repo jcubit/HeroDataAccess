@@ -19,7 +19,7 @@ public actor AsyncImageLoader {
     private var cache: [URL: CacheEntry] = [:]
 
     /// Loads a dictionary of hero images asynchronously
-    func images(from urls: [URL]) async throws -> [URL: HeroImage] {
+    public func images(from urls: [URL]) async throws -> [URL: HeroImage] {
         var images = [URL: HeroImage](minimumCapacity: urls.count)
         try await withThrowingTaskGroup(of: (URL, HeroImage).self ) { group in
             for url in urls {
@@ -36,7 +36,7 @@ public actor AsyncImageLoader {
     }
 
     /// Loads a single image from a URL by first cheching if its cached
-    func image(from url: URL) async throws -> HeroImage {
+    private func image(from url: URL) async throws -> HeroImage {
         if let cached = cache[url] {
             switch cached {
                 case .ready(let image):
@@ -62,7 +62,7 @@ public actor AsyncImageLoader {
     }
 
     /// Loads a single image directly from a URL
-    func loadImage(from url: URL) async throws -> HeroImage {
+    private func loadImage(from url: URL) async throws -> HeroImage {
         let (data, response) = try await URLSession.shared.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse,
