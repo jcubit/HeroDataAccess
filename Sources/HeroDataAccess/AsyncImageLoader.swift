@@ -65,9 +65,10 @@ public actor AsyncImageLoader {
     private func loadImage(from url: URL) async throws -> HeroImage {
         let (data, response) = try await URLSession.shared.data(from: url)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200
-        else { throw LoadingErrors.invalidServerResponse }
+        if let httpResponse = response as? HTTPURLResponse {
+            guard httpResponse.statusCode == 200
+            else { throw LoadingErrors.invalidServerResponse }
+        }
 
         guard let image = HeroImage(data: data)
         else { throw LoadingErrors.unsupportedImage }

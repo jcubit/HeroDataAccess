@@ -11,34 +11,34 @@ import Foundation
 /// Implements the ``HeroRepository`` protocol that the
 /// domain layer owns. It uses an asynchronous image loader
 public final class JSONHeroRepository: HeroRepository {
-    private let openDotaBaseURL: URL
-    private let heroURLs: URL
+    private let baseURL: URL
+    private let heroesURL: URL
     private var imageLoader = AsyncImageLoader()
 
-    public init(openDotaBaseURL: String, heroURLs: String) {
-        guard let openDotaBaseURL = URL(string: openDotaBaseURL)
-        else { fatalError("Could not init URL with string: \(openDotaBaseURL)") }
-        guard let heroURLs = URL(string: heroURLs)
-        else { fatalError("Could not init URL with string: \(heroURLs)") }
-        self.heroURLs = heroURLs
-        self.openDotaBaseURL = openDotaBaseURL
+    public init(baseURL: String, heroesURL: String) {
+        guard let baseURL = URL(string: baseURL)
+        else { fatalError("Could not init URL with string: \(baseURL)") }
+        guard let heroURLs = URL(string: heroesURL)
+        else { fatalError("Could not init URL with string: \(heroesURL)") }
+        self.heroesURL = heroURLs
+        self.baseURL = baseURL
     }
 
     public func fetchHeroes() async throws -> [RawHero] {
-        let (data, response) = try await URLSession.shared.data(from: heroURLs)
+        let (data, response) = try await URLSession.shared.data(from: heroesURL)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200
-        else { throw LoadingErrors.invalidServerResponse }
+        if let httpResponse = response as? HTTPURLResponse {
+            guard httpResponse.statusCode == 200
+            else { throw LoadingErrors.invalidServerResponse }
+        }
 
         let heroes = try JSONDecoder().decode([RawHero].self, from: data)
         return heroes
     }
 
     public func images(from urls: [String]) async throws -> [URL: HeroImage] {
-        let fullURL = urls.compactMap({ URL(string: $0, relativeTo: openDotaBaseURL)})
+        let fullURL = urls.compactMap({ URL(string: $0, relativeTo: baseURL)})
         return try await imageLoader.images(from: fullURL)
     }
-
 }
 
