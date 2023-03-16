@@ -8,12 +8,6 @@
 import Foundation
 import HeroDomain
 
-/// Fetch errors
-public enum LoadingErrors: Error {
-    case invalidServerResponse
-    case unsupportedImage
-}
-
 /// Loads Images with a cache and asynchronous
 public actor AsyncImageLoader {
     private var cache: [URL: CacheEntry] = [:]
@@ -67,11 +61,11 @@ public actor AsyncImageLoader {
 
         if let httpResponse = response as? HTTPURLResponse {
             guard httpResponse.statusCode == 200
-            else { throw LoadingErrors.invalidServerResponse }
+            else { throw FetchErrors.invalidServerResponse }
         }
 
         guard let image = HeroImage(data: data)
-        else { throw LoadingErrors.unsupportedImage }
+        else { throw FetchErrors.unsupportedImage }
         return image
     }
 }
