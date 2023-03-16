@@ -18,7 +18,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: "https://github.com/jcubit/HeroDomain.git", from: "0.1.1-beta")
+        .package(url: "https://github.com/jcubit/HeroDomain.git", from: "0.1.1-rc.3")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -28,7 +28,7 @@ let package = Package(
             dependencies: [.product(name: "HeroDomain", package: "HeroDomain")]),
         .testTarget(
             name: "HeroDataAccessTests",
-            dependencies: ["HeroDataAccess"], 
+            dependencies: ["HeroDataAccess"],
             exclude: ["Fixtures"]),
     ],
     swiftLanguageVersions: [.v5]

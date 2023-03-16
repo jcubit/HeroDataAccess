@@ -29,7 +29,7 @@ public final class JSONHeroRepository: HeroRepository {
 
         if let httpResponse = response as? HTTPURLResponse {
             guard httpResponse.statusCode == 200
-            else { throw LoadingErrors.invalidServerResponse }
+            else { throw FetchErrors.invalidServerResponse }
         }
 
         let heroes = try JSONDecoder().decode([RawHero].self, from: data)
